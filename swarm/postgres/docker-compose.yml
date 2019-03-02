@@ -1,0 +1,65 @@
+---
+version: "3.3"
+
+services:
+  primary:
+    hostname: 'primary'
+    image: crunchydata/crunchy-postgres:centos7-9.6.11-2.2.0
+    environment:
+    - PGHOST=/tmp
+    - MAX_CONNECTIONS=250
+    - MAX_WAL_SENDERS=5
+    - PG_MODE=primary
+    - PG_PRIMARY_USER=
+    - PG_PRIMARY_PASSWORD=
+    - PG_DATABASE=
+    - PG_USER=
+    - PG_PASSWORD=
+    - PG_ROOT_PASSWORD=
+    - PG_PRIMARY_PORT=5432
+    volumes:
+    - pg-primary-vol:/pgdata
+    ports:
+    - "5432"
+    networks:
+    - crunchynet
+    - lan
+    deploy:
+      placement:
+        constraints:
+        - node.labels.type == primary
+        - node.role == worker
+  replica:
+    image: crunchydata/crunchy-postgres:centos7-9.6.11-2.2.0
+    environment:
+    - PGHOST=/tmp
+    - MAX_CONNECTIONS=250
+    - MAX_WAL_SENDERS=5
+    - PG_MODE=replica
+    - PG_PRIMARY_HOST=
+    - PG_PRIMARY_PORT=
+    - PG_PRIMARY_USER=
+    - PG_PRIMARY_PASSWORD=
+    - PG_DATABASE=
+    - PG_USER=
+    - PG_PASSWORD=
+    - PG_ROOT_PASSWORD=
+    volumes:
+    - pg-replica-vol:/pgdata
+    ports:
+    - "5432"
+    networks:
+    - crunchynet
+    deploy:
+      placement:
+        constraints:
+        - node.labels.type != primary
+        - node.role == worker
+networks:
+  crunchynet:
+  lan:
+    external: true
+
+volumes:
+  pg-primary-vol:
+  pg-replica-vol:

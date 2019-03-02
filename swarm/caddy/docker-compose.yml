@@ -1,0 +1,51 @@
+version: '3.2'
+services:
+  caddy:
+    image: abiosoft/caddy:no-stats
+    command: >
+      -conf /etc/Caddyfile
+      -quic
+      -log stdout
+    environment:
+      - ACME_AGREE=true
+    volumes:
+      - caddy_data:/root/.caddy
+      - caddy_etc:/etc
+    networks:
+      - wan
+      - lan
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: udp
+        mode: host
+    logging:
+      driver: syslog
+      options:
+        tag: caddy
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+volumes:
+  caddy_data:
+    external: true
+  caddy_etc:
+    external: true
+networks:
+  wan:
+  lan:
+    external: true

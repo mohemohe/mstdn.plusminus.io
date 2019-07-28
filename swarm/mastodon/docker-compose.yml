@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 services:
 
 #  db:
@@ -11,19 +11,19 @@ services:
 #    volumes:
 #      - ./postgres:/var/lib/postgresql/data
 
-  redis:
-    restart: always
-    image: redis:4.0-alpine
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-    volumes:
-      - /data
-    deploy:
-      placement:
-        constraints:
-          - node.role == worker
+#  redis:
+#    restart: always
+#    image: redis:4.0-alpine
+#    networks:
+#      - internal_network
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#    volumes:
+#      - /data
+#    deploy:
+#      placement:
+#        constraints:
+#          - node.role == worker
 
 #  es:
 #    restart: always
@@ -47,20 +47,21 @@ services:
       - external_network
       - internal_network
     healthcheck:
-      #test: ["CMD-SHELL", "wget -q --spider --header 'x-forwarded-proto: https' --proxy off localhost:3000/api/v1/instance || exit 1"]
-      test: ["CMD-SHELL", "true"]
-    ports:
-      - "127.0.0.1:3000:3000"
-      - 3000
-    depends_on:
+      #test: ["CMD-SHELL", "/usr/bin/env wget -q --spider --header 'x-forwarded-proto: https' --proxy off localhost:3000/api/v1/instance || exit 1"]
+      test: ["CMD-SHELL", "/usr/bin/env wget -O - --header 'x-forwarded-proto: https' localhost:3000/api/v1/instance || exit 1"]
+      #test: ["CMD-SHELL", "true"]
+      #ports:
+      #  - "127.0.0.1:3000:3000"
+      #  - 3000
+      #depends_on:
 #      - db
-      - redis
+#- redis
 #      - es
     volumes:
       - /mastodon/public/system
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 2
       update_config:
         parallelism: 1
         delay: 30s
@@ -72,26 +73,30 @@ services:
   streaming:
     #build: .
     image: tootsuite/mastodon:edge
+    #image: tootsuite/mastodon:latest
     restart: always
     env_file: .env.production
+    #environment:
+    #  - LOG_LEVEL=silly
     command: yarn start
     networks:
       - external_network
       - internal_network
     healthcheck:
       #test: ["CMD-SHELL", "wget -q --spider --header 'x-forwarded-proto: https' --proxy off localhost:4000/api/v1/streaming/health || exit 1"]
-      test: ["CMD-SHELL", "true"]
-    ports:
-      - "127.0.0.1:4000:4000"
-      - 4000
+      test: ["CMD-SHELL", "wget -O - --header 'x-forwarded-proto: https' localhost:4000/api/v1/streaming/health || exit 1"]
+      #test: ["CMD-SHELL", "true"]
+      #ports:
+      #- "127.0.0.1:4000:4000"
+      #- 4000
     depends_on:
 #      - db
       - redis
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
       update_config:
-        parallelism: 2
+        parallelism: 1
         delay: 30s
         order: start-first
       placement:

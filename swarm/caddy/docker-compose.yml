@@ -3,14 +3,17 @@ services:
   caddy:
     image: abiosoft/caddy:no-stats
     command: >
-      -conf /etc/Caddyfile
+      -conf /mnt/Caddyfile
       -quic
       -log stdout
     environment:
       - ACME_AGREE=true
+      - CLOUDFLARE_EMAIL=
+      - CLOUDFLARE_API_KEY=
     volumes:
       - caddy_data:/root/.caddy
-      - caddy_etc:/etc
+      - caddy_cache:/data/cache
+      - ./mnt:/mnt
     networks:
       - wan
       - lan
@@ -42,9 +45,7 @@ services:
         hard: 40000
 volumes:
   caddy_data:
-    external: true
-  caddy_etc:
-    external: true
+  caddy_cache:
 networks:
   wan:
   lan:

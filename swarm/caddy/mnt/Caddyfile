@@ -1,0 +1,61 @@
+manage.docker.linode.plusminus.io {
+  tls {
+    dns cloudflare
+  }
+  log stdout
+  errors stderr
+  proxy / portainer_portainer:9000 {
+    transparent
+    websocket
+  }
+}
+
+minio.plusminus.io {
+  tls {
+    dns cloudflare
+  }
+  log stdout
+  errors stderr
+
+  realip {
+    from 10.0.0.0/8
+    from 172.16.0.0/12
+    from 192.168.0.0/16
+  }
+
+  proxy /mastodon https://media.mstdn.plusminus.io {
+    without /mastodon
+  }
+}
+
+mstdn.plusminus.io {
+  tls {
+    dns cloudflare
+  }
+  log stdout
+  errors stdout
+
+  realip {
+    from 10.0.0.0/8
+    from 172.16.0.0/12
+    from 192.168.0.0/16
+  }
+  
+  header / {
+    X-Robots-Tag "noindex,nofollow,noarchive"
+  }
+
+  header /emoji Cache-Control "public, max-age=31536000, immutable"
+  header /packs Cache-Control "public, max-age=31536000, immutable"
+  header /system/accounts/avatars Cache-Control "public, max-age=31536000, immutable"
+  header /system/media_attachments/files Cache-Control "public, max-age=31536000, immutable"
+
+  proxy / http://mastodon_web:3000 {
+    transparent
+  }
+  
+  proxy /api/v1/streaming http://mastodon_streaming:4000 {
+    transparent
+    websocket
+  }
+}

@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  rclone:
+    restart: always
+    image: mumiehub/rclone-mount
+    networks:
+      - default
+    volumes:
+      - "./config:/config"
+      - "/backup:/mnt/mediaefs:shared"
+    environment:
+      - "RemotePath=backup:"
+      - "MountCommands=--allow-other --allow-non-empty"
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - "apparmor:unconfined"
+    devices:
+      - "/dev/fuse:/dev/fuse"
+networks:
+  default:

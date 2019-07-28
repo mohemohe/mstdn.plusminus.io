@@ -3,3 +3,4 @@
 cd ../swarm/mastodon
 docker-compose -f docker-compose.manage.yml pull
 docker-compose -f docker-compose.manage.yml run --rm web rails db:migrate
+docker-compose -f docker-compose.manage.yml down --rmi all

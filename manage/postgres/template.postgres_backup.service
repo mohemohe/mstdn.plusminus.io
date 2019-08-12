@@ -1,0 +1,10 @@
+[Unit]
+Description=postgres backup
+
+[Service]
+Type=oneshot
+ExecStart=###CURRENT_DIR###/postgres_backup.sh
+User=###CURRENT_USER###
+
+[Install]
+WantedBy=multi-user.target

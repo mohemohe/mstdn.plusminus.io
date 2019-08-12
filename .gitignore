@@ -1,2 +1,5 @@
 swarm/mastodon/.env.production
+swarm/rclone/config/*
+
+!.gitkeep
 

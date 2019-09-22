@@ -63,7 +63,7 @@ for SUFFIX in $(seq ${LOWER_LIMIT} ${UPPER_LIMIT}); do {
     } fi
     ID="$(echo "${ACCOUNTS}" | jq -r .[0].id)"
     if [[ "$(checkUser "${SUFFIX}" "${ID}")" == "1" ]]; then {
-        echo already syspended. skip. 1>&2
+        echo already suspended. skip. 1>&2
         continue
     } fi
     STATUS="$(suspendUser "${SUFFIX}" "${ID}")"

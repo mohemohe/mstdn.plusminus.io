@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 services:
 
 #  db:
@@ -106,7 +106,7 @@ services:
   sidekiq:
     #build: .
     image: tootsuite/mastodon:edge
-    command: bundle exec sidekiq -c 25 -q default -q mailers -q push -q pull
+    command: bundle exec sidekiq -c 15 -q default -q mailers -q push -q pull
     restart: always
     env_file: .env.production
     depends_on:

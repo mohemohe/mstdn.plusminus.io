@@ -89,9 +89,9 @@ services:
       #ports:
       #- "127.0.0.1:4000:4000"
       #- 4000
-    depends_on:
+#    depends_on:
 #      - db
-      - redis
+#      - redis
     deploy:
       mode: replicated
       replicas: 1
@@ -109,9 +109,9 @@ services:
     command: bundle exec sidekiq -c 15 -q default -q mailers -q push -q pull
     restart: always
     env_file: .env.production
-    depends_on:
+#    depends_on:
 #      - db
-      - redis
+#      - redis
     networks:
       - external_network
       - internal_network

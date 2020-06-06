@@ -1,5 +1,5 @@
 finish_file: /opt/mastodon/app/lib/patched
 patches:
   - file: /opt/mastodon/app/lib/rate_limiter.rb
-    regex: limit:\s(\d)*,
-    replace: limit:\s99999999,
+    regex: 'limit:\s(\d)*,'
+    replace: 'limit: 99999999,'

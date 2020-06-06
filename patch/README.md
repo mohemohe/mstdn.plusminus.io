@@ -1,0 +1,1 @@
+https://github.com/mohemohe/mastodon-dynamic-patch 用のやつ

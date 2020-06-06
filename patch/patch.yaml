@@ -1,3 +1,4 @@
 - file: /opt/mastodon/app/lib/rate_limiter.rb
   regex: limit:\s(\d)*,
   replace: limit:\s99999999,
+  
